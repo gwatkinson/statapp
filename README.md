@@ -6,3 +6,7 @@ Avec :
 * Benjamin BRANSTEN
 * Mohammed GUENNOUNI
 * Jean-Baptiste PAGE
+
+
+Documentation :
+https://gwatkinson.github.io/statapp/index.html
