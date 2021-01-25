@@ -11,3 +11,4 @@ Avec :
 
 Documentation :
 https://gwatkinson.github.io/statapp/index.html
+modif ok
