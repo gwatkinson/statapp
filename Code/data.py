@@ -56,7 +56,7 @@ def main():
     # Visualize it
     mapper.visualize(
         graph,
-        path_html="make_circles_keplermapper_output.html",
+        path_html="docs/make_circles_keplermapper_output.html",
         title="make_circles(n_samples=5000, noise=0.03, factor=0.3)",
     )
 
