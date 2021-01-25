@@ -8,5 +8,7 @@ Avec :
 * Jean-Baptiste PAGE
 
 
+Modification de JBP
+
 Documentation :
 https://gwatkinson.github.io/statapp/index.html
