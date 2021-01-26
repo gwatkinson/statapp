@@ -6,7 +6,7 @@ Avec :
 
 * Gabriel WATKINSON
 * Benjamin BRANSTEN
-* Mohammed GUENNOUNI
+* Mohamed GUENNOUNI HASSANI
 * Jean-Baptiste PAGE
 
 Documentation :
