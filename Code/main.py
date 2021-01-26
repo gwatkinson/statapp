@@ -84,6 +84,7 @@ import scipy.cluster.hierarchy as sch
 
 # %%
 import kmapper as km
+from kmapper.cover import Cover
 from kmapper import jupyter  # Creates custom CSS full-size Jupyter screen
 
 # %% [markdown]
@@ -115,7 +116,7 @@ patents_firm_merge
 
 
 # %%
-datetime_df = patents_firm_merge
+datetime_df = patents_firm_merge.set_index("index")
 for col in ["fdate", "idate", "pdate"]:
     datetime_df[col] = pd.to_datetime(
         patents_firm_merge[col], infer_datetime_format=True, errors="coerce"
@@ -139,112 +140,91 @@ full_df.count() / len(full_df)
 
 
 # %%
-full_df.groupby("permno")
+full_df
 
 
 # %%
-full_df.drop(["fdate", "pdate", "year", "_merge"], axis=1)
+features = ["xi", "Tcw", "Tsm", "tcw", "tsm", "ncites"]
+SMA_features = ["SMA_" + l for l in features]
 
 
 # %%
-index_names = [
-    c
-    for c in patents_firm_merge.columns
-    if c
-    not in [
-        "index",
-        "patnum",
-        "fdate",
-        "idate",
-        "pdate",
-        "permno",
-        "year",
-        "Npats",
-        "_merge",
-        "patent_class",
-        "subclass",
-    ]
-]
+full_df[SMA_features] = (
+    full_df.sort_values(by="idate")
+    .groupby(["permno", "patent_class"])[features]
+    .rolling(window=5, min_periods=1)
+    .mean()
+    .reset_index(level=[0, 1], drop=True)
+    .rename(columns={l: "SMA_" + l for l in features})
+)
 
 
 # %%
-df = patents_firm_merge[feature_names]
+for l in features:
+    full_df["log_" + l] = np.log(1 + full_df["SMA_" + l])
 
 
 # %%
-df.dtypes
+matrix = full_df[["log_xi", "log_Tcw", "log_Tsm", "log_tcw", "log_tsm", "log_ncites"]]
 
 
 # %%
-# Some sample data
-from sklearn import datasets
+matrix
 
-data, labels = datasets.make_circles(n_samples=5000, noise=0.03, factor=0.3)
 
+# %%
+normalised_matrix = StandardScaler().fit_transform(matrix)
+
+
+# %%
+normalised_matrix
+
+
+# %%
+PCA = PCA(n_components=2)
+principalComponents = PCA.fit_transform(normalised_matrix)
+principalDf = pd.DataFrame(data=principalComponents, columns=["PC1", "PC2"])
+
+
+# %%
+matrix.reset_index()["index"]
+
+
+# %%
+projected_data = pd.concat(
+    [matrix.reset_index()["index"], principalDf], axis=1
+).set_index("index")
+
+
+# %%
+projected_data
+
+
+# %%
 # Initialize
-mapper = km.KeplerMapper(verbose=1)
+mapper = km.KeplerMapper(verbose=0)
 
-# Fit to and transform the data
-projected_data = mapper.fit_transform(data, projection=[0, 1])  # X-Y axis
 
+# %%
+# Cover
+cov = Cover(n_cubes=20, perc_overlap=0.5)
+
+
+# %%
 # Create dictionary called 'graph' with nodes, edges and meta-information
-graph = mapper.map(projected_data, data)
+graph = mapper.map(projected_data, normalised_matrix, cover=cov)
 
+
+# %%
 # Visualize it
 html = mapper.visualize(
-    graph,
-    path_html="make_circles_keplermapper_output.html",
-    title="make_circles(n_samples=5000, noise=0.03, factor=0.3)",
+    graph, path_html="../docs/MapperCluster.html", title="Mapper Clustering Algorithm"
 )
 
 # Inline display
-# jupyter.display(path_html="http://mlwave.github.io/tda/word2vec-gender-bias.html")
-jupyter.display(path_html="make_circles_keplermapper_output.html")
+jupyter.display(path_html="../docs/MapperCluster.html")
 
 
 # %%
-# projected_data
-from sklearn.decomposition import PCA
-
-x = df.values
-# preprocessing avant PCA
-
-from sklearn.preprocessing import StandardScaler
-
-scaler = StandardScaler()
-scale = scaler.fit(X)
-X_scaled = scaler.transform(X)
-X_scaled_df = pd.DataFrame(X_scaled, columns=X.columns)
-from sklearn.decomposition import PCA
-
-pca = PCA(n_components=2)
-PC = pca.fit_transform(X_scaled_df)
-p_Df = pd.DataFrame(data=PC, columns=["principal component 1", "principal component 2"])
-p_Df.head()
-
-pca = PCA(n_components=2)
-principalComponents = pca.fit_transform(x)
-projected_data = pd.DataFrame(
-    data=principalComponents, columns=["principal component 1", "principal component 2"]
-)
-
-projected_dataframe = pd.concat([projected_data, df[["target"]]], axis=1)
-
-fig = plt.figure(figsize=(1000, 1000))
-ax = fig.add_subplot(1, 1, 1)
-ax.set_xlabel("Principal Component 1", fontsize=15)
-ax.set_ylabel("Principal Component 2", fontsize=15)
-ax.set_title("2 component PCA", fontsize=20)
-targets = ["Iris-setosa", "Iris-versicolor", "Iris-virginica"]
-colors = ["r", "g", "b"]
-for target, color in zip(targets, colors):
-    indicesToKeep = finalDf["target"] == target
-    ax.scatter(
-        finalDf.loc[indicesToKeep, "principal component 1"],
-        finalDf.loc[indicesToKeep, "principal component 2"],
-        c=color,
-        s=50,
-    )
-ax.legend(targets)
-ax.grid()
+graph
 
