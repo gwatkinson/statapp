@@ -1,7 +1,7 @@
 # Custom :
-Data/
-Literature/
-
+literature/
+data/*
+!data/README.md
 
 # Template :
 # Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,stata,data,vscode
