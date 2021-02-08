@@ -1,0 +1,1 @@
+# Dossier où mettre les images
