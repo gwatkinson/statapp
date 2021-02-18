@@ -2,6 +2,7 @@
 literature/
 data/*
 !data/README.md
+.github/workflows/latex.yml
 
 # Template :
 # Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,stata,data,vscode
