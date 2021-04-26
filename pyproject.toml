@@ -8,11 +8,11 @@ authors = [
     "Mohamed Geuennouni-Hassani <mguennounihassani@gmail.com>", 
     "Jean-Baptiste Page <jean-batipste.page@ensae.fr>"
 ]
-# license = ""
+# license = "TypeDeLicense"
 readme = "README.md"
 homepage = "https://github.com/gwatkinson/statapp"
 repository = "https://github.com/gwatkinson/statapp"
-# documentation = ""
+# documentation = "LienVersLaDoc"
 
 # keywords = ["statistics", "patents", "R&D", "statapp"]
 
@@ -37,14 +37,14 @@ voila = "^0.2.9"
 
 # Formatters
 black = "^20.8b1"
-isort = "^5.5.1"
+isort = "^5.5.1" # Sort imports
 
 # Linters
 pylint = "~2.6.0"
 pydocstyle = "*"
-mypy = "~0.761"
+# mypy = "~0.761"
 
-# # Testing
+# Testing
 # pytest = "^5.4"
 # pytest-describe = "^1.0"
 # pytest-expecter = "*"
@@ -53,7 +53,7 @@ mypy = "~0.761"
 # pytest-cov = "*"
 # pytest-profiling = "*"
 
-# # Documentation
+# Documentation
 # mkdocs = "~1.0"
 # pygments = "^2.5.2"
 
@@ -65,8 +65,6 @@ build-backend = "poetry.core.masonry.api"
 line-length = 88
 target-version = ['py38', 'py39']
 
-[tool.flake8]
-ignore = "E203,E266,H106,H904"
-max-line-length = 88
-max-complexity = 25
-hang-closing = true
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 120
+# disable = "C0330, R0201"
