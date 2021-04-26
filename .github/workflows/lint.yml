@@ -1,0 +1,39 @@
+name: Lint the project
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      NB_STEPS: 6
+    steps:
+      - name: 1/${{ env.NB_STEPS }}) Repository checkout
+        uses: actions/checkout@v2
+      - name: 2/${{ env.NB_STEPS }}) Python setup (Python 3.9)
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: 3/${{ env.NB_STEPS }}) Poetry setup
+        uses: ClementWalter/poetry-action@v1
+        with:
+          os: ubuntu-latest
+          python-version: 3.9
+      # - name: 5/${{ env.NB_STEPS }}) Format with black
+      #   run: |
+      #     black projet
+      # - name: 4/${{ env.NB_STEPS }}) Format with isort
+      #   run: |
+      #     isort projet
+      - name: 4/${{ env.NB_STEPS }}) Lint with pylint
+        run: |
+          pylint projet
+      - name: 5/${{ env.NB_STEPS }}) Lint with mypy
+        run: |
+          mypy projet
+      - name: 6/${{ env.NB_STEPS }}) Lint with pydocstyle
+        run: |
+          pydocstyle -e projet
