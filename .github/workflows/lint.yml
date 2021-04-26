@@ -7,33 +7,52 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
     env:
-      NB_STEPS: 6
+      NB_STEPS: 7
+      os: ubuntu-latest
+      python-version: 3.9
+      poetry-version: 1.1.6
+    runs-on: ${{ env.os }}
     steps:
       - name: 1/${{ env.NB_STEPS }}) Repository checkout
         uses: actions/checkout@v2
       - name: 2/${{ env.NB_STEPS }}) Python setup (Python 3.9)
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: ${{ env.python-version }}
       - name: 3/${{ env.NB_STEPS }}) Poetry setup
-        uses: ClementWalter/poetry-action@v1
+        uses: abatilo/actions-poetry@v2.0.0
         with:
-          os: ubuntu-latest
-          python-version: 3.9
+          poetry-version: ${{ env.poetry-version }}
+      - name: 4/${{ env.NB_STEPS }}) Setup poetry environment
+        run: |
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project false
+          poetry config virtualenvs.path .
+      - name: 5/${{ env.NB_STEPS }}) Cache Poetry virtualenv
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: .virtualenvs
+          key: ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: 5/${{ env.NB_STEPS }}) Install dependencies with poetry
+        run: |
+          poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
       # - name: 5/${{ env.NB_STEPS }}) Format with black
       #   run: |
       #     black projet
       # - name: 4/${{ env.NB_STEPS }}) Format with isort
       #   run: |
       #     isort projet
-      - name: 4/${{ env.NB_STEPS }}) Lint with pylint
+      - name: 7/${{ env.NB_STEPS }}) Lint with pylint
         run: |
           pylint projet
-      - name: 5/${{ env.NB_STEPS }}) Lint with mypy
+      - name: 8/${{ env.NB_STEPS }}) Lint with mypy
         run: |
           mypy projet
-      - name: 6/${{ env.NB_STEPS }}) Lint with pydocstyle
+      - name: 9/${{ env.NB_STEPS }}) Lint with pydocstyle
         run: |
           pydocstyle -e projet
