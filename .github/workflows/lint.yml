@@ -49,10 +49,10 @@ jobs:
       #     isort projet
       - name: 7/${{ env.NB_STEPS }}) Lint with pylint
         run: |
-          pylint projet
+          poetry run pylint projet
       - name: 8/${{ env.NB_STEPS }}) Lint with mypy
         run: |
-          mypy projet
+          poetry run mypy projet
       - name: 9/${{ env.NB_STEPS }}) Lint with pydocstyle
         run: |
-          pydocstyle -e projet
+          poetry run pydocstyle -e projet
