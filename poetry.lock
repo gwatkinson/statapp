@@ -343,7 +343,7 @@ testing = ["Django (<3.1)", "colorama", "docopt", "pytest (<6.0.0)"]
 name = "jinja2"
 version = "2.11.3"
 description = "A very fast and expressive template engine."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -572,6 +572,24 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "kmapper"
+version = "2.0.0"
+description = "Python implementation of Mapper algorithm for Topological Data Analysis."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Jinja2 = "*"
+numpy = "*"
+scikit-learn = "*"
+scipy = "*"
+
+[package.extras]
+docs = ["sktda-docs-config", "pandas", "sphinx-gallery", "networkx", "matplotlib", "python-igraph", "plotly", "ipywidgets"]
+testing = ["pytest", "networkx", "matplotlib", "python-igraph", "plotly", "ipywidgets"]
+
+[[package]]
 name = "lazy-object-proxy"
 version = "1.4.3"
 description = "A fast and thorough lazy object proxy."
@@ -583,7 +601,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 name = "markupsafe"
 version = "1.1.1"
 description = "Safely add untrusted strings to HTML/XML markup."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
 
@@ -1363,7 +1381,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "72171b382a01650801be7e361d8f0f2469f453ea3aba74cfcc27a5fa20a6d0be"
+content-hash = "de98f427a8381c07e53613324682c61e73e41617a69c69fe0007f4d536671d9b"
 
 [metadata.files]
 anyio = [
@@ -1618,6 +1636,10 @@ kiwisolver = [
     {file = "kiwisolver-1.3.1-pp36-pypy36_pp73-manylinux2010_x86_64.whl", hash = "sha256:33449715e0101e4d34f64990352bce4095c8bf13bed1b390773fc0a7295967b3"},
     {file = "kiwisolver-1.3.1-pp36-pypy36_pp73-win32.whl", hash = "sha256:401a2e9afa8588589775fe34fc22d918ae839aaaf0c0e96441c0fdbce6d8ebe6"},
     {file = "kiwisolver-1.3.1.tar.gz", hash = "sha256:950a199911a8d94683a6b10321f9345d5a3a8433ec58b217ace979e18f16e248"},
+]
+kmapper = [
+    {file = "kmapper-2.0.0-py3-none-any.whl", hash = "sha256:8b31b4264a0d10b9c66b491f91c038f3413e9733e8303eee255c8a1dfcc51e64"},
+    {file = "kmapper-2.0.0.tar.gz", hash = "sha256:3708d889f96f6bbe89c52000dd9378ca4c35638180ff894b64ebbdfcfe62aab2"},
 ]
 lazy-object-proxy = [
     {file = "lazy-object-proxy-1.4.3.tar.gz", hash = "sha256:f3900e8a5de27447acbf900b4750b0ddfd7ec1ea7fbaf11dfa911141bc522af0"},
