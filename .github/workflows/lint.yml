@@ -10,27 +10,26 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     env:
-      NB_STEPS: 7
       os: ubuntu-latest
       python-version: 3.9
       poetry-version: 1.1.6
     steps:
-      - name: 1/${{ env.NB_STEPS }}) Repository checkout
+      - name: 1/9) Repository checkout
         uses: actions/checkout@v2
-      - name: 2/${{ env.NB_STEPS }}) Python setup (Python 3.9)
+      - name: 2/9) Python setup (Python 3.9)
         uses: actions/setup-python@v2
         with:
           python-version: ${{ env.python-version }}
-      - name: 3/${{ env.NB_STEPS }}) Poetry setup
+      - name: 3/9) Poetry setup
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: ${{ env.poetry-version }}
-      - name: 4/${{ env.NB_STEPS }}) Setup poetry environment
+      - name: 4/9) Setup poetry environment
         run: |
           poetry config virtualenvs.create true
           poetry config virtualenvs.in-project false
           poetry config virtualenvs.path .
-      - name: 5/${{ env.NB_STEPS }}) Cache Poetry virtualenv
+      - name: 5/9) Cache Poetry virtualenv
         uses: actions/cache@v2
         id: cache
         with:
@@ -38,22 +37,28 @@ jobs:
           key: ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: 6/${{ env.NB_STEPS }}) Install dependencies with poetry
+        if: always()
+      - name: 6/9) Install dependencies with poetry
         run: |
           poetry install
         if: steps.cache.outputs.cache-hit != 'true'
-      # - name: 5/${{ env.NB_STEPS }}) Format with black
+      # - name: 5/9) Format with black
       #   run: |
       #     black projet
-      # - name: 4/${{ env.NB_STEPS }}) Format with isort
+      #   if: always()
+      # - name: 4/9) Format with isort
       #   run: |
       #     isort projet
-      - name: 7/${{ env.NB_STEPS }}) Lint with pylint
+      #   if: always()
+      - name: 7/9) Lint with pylint
         run: |
           poetry run pylint projet
-      - name: 8/${{ env.NB_STEPS }}) Lint with mypy
+        if: always()
+      - name: 8/9) Lint with mypy
         run: |
           poetry run mypy projet
-      - name: 9/${{ env.NB_STEPS }}) Lint with pydocstyle
+        if: always()
+      - name: 9/9) Lint with pydocstyle
         run: |
           poetry run pydocstyle -e projet
+        if: always()
