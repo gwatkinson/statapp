@@ -34,6 +34,7 @@ kmapper = "^2.0.0"
 # Jupyter
 jupyter = "^1.0.0"
 jupyterlab = "^3.0.14"
+jupyterlab-kite = "^2.0.2"
 voila = "^0.2.9"
 
 # Formatters
