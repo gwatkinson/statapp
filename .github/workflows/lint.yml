@@ -8,6 +8,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    continue-on-error: true
     env:
       NB_STEPS: 7
       os: ubuntu-latest
@@ -37,7 +38,7 @@ jobs:
           key: ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: 5/${{ env.NB_STEPS }}) Install dependencies with poetry
+      - name: 6/${{ env.NB_STEPS }}) Install dependencies with poetry
         run: |
           poetry install
         if: steps.cache.outputs.cache-hit != 'true'
