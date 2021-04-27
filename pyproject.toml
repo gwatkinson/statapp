@@ -53,6 +53,7 @@ mypy = "~0.761"
 # pytest-repeat = "*"
 # pytest-random = "*"
 # pytest-cov = "*"
+jupyterlab-git = "^0.30.0"
 # pytest-profiling = "*"
 
 # Documentation
