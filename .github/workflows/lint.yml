@@ -7,12 +7,12 @@ on:
 
 jobs:
   lint:
+    runs-on: ubuntu-latest
     env:
       NB_STEPS: 7
       os: ubuntu-latest
       python-version: 3.9
       poetry-version: 1.1.6
-    runs-on: ${{ os }}
     steps:
       - name: 1/${{ env.NB_STEPS }}) Repository checkout
         uses: actions/checkout@v2
