@@ -39,6 +39,7 @@ def add_permno(cites, patents, how='inner'):
     tmp1 = tmp1.drop(columns=['patnum']).rename(columns={'permno' : 'citing_permno'})
     tmp2 = pd.merge(tmp1, patents[['patnum', 'permno']], how=how, left_on='cited', right_on='patnum')
     tmp2 = tmp2.drop(columns=['patnum']).rename(columns={'permno' : 'cited_permno'})
+    # TODO : Add save option
     return tmp2
 
 def pat_to_permno_cites(cites, methods=['count', 'freq']):
@@ -71,7 +72,8 @@ def pat_to_permno_cites(cites, methods=['count', 'freq']):
     
     if 'count' not in methods:
         tmp = tmp.drop(columns=['count'])
-        
+    
+    # TODO : Add save option
     return tmp
 
 def cite_hist(permno, permno_cites, method='freq', show=True, save=True, path=None, dpi=500, figsize=(10,7)):
