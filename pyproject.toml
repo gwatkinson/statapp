@@ -57,7 +57,7 @@ jupyterlab-git = "^0.30.0"
 # pytest-profiling = "*"
 
 # Documentation
-# mkdocs = "~1.0"
+mkdocs = "~1.0"
 # pygments = "^2.5.2"
 
 [build-system]
