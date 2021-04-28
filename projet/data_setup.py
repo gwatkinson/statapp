@@ -1,8 +1,37 @@
+"""
+Module to setup the DataFrames.
+
+Load, preprocess, transform different level data.
+
+This is divided in a few sections :
+
+    * Loading the data :
+        * :func:`load_df`
+        * :func:`load_data`
+    * Patent level data :
+        * :func:`format_patent_data`
+        * :func:`add_dumies`
+        * :class:`AddLag`
+    * Cite data :
+        * :func:`add_permno`
+        * :func:`patent_to_firm_cites`
+        * :func:`cite_hist`
+    * Firm level data :
+        * TODO
+"""
+
+
 # Import
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import scipy as sc
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import mean_squared_log_error
+from sklearn.ensemble import RandomForestRegressor
+# from lightgbm import LGBMRegressor
+from sklearn import base
 
 # Load raw data
 def load_df(path, form):
@@ -95,7 +124,7 @@ def load_data(dfs=['data_firm_level', 'patents_firm_merge', 'cites']):
     return l
 
 #  Patent level functions
-def format_patent_data(patent_data, keep=["year", "permno", "patent_class"], na_cols=["patent_class"], date_cols=[]):
+def format_patent_data(patent_data, keep=["year", "permno", "patent_class"], na_cols=["patent_class"], date_cols=None, save=False):
     """
     Format the raw DataFrame.
     
@@ -103,12 +132,19 @@ def format_patent_data(patent_data, keep=["year", "permno", "patent_class"], na_
     ----------
     patent_data : DataFrame
         The raw patent level DataFrame.
-    keep : list[str], default ["idate", "year", "permno", "patent_class"]
+    keep : list[str], default [year", "permno", "patent_class"]
         The columns to keep.
-    na_cols : list[str], default ["patent_class", "xi"]
+        
+        If `None`, keep all columns.
+    na_cols : list[str], default ["patent_class"]
         The columns to where to drop the missing values.
-    date_cols : list[str], default ["idate"]
+        
+        If `None`, do not drop any rows.
+    date_cols : list[str], default None
         The date columns to format.
+    save : bool, default False
+        Weeither to save the DataFrame
+        in 'data/derived_data/patent_level/patent_data.pkl'
     
     Notes
     -----
@@ -127,18 +163,26 @@ def format_patent_data(patent_data, keep=["year", "permno", "patent_class"], na_
     """
     tmp = patent_data.copy()
     tmp["patent_class"] = pd.to_numeric(tmp["patent_class"], errors="coerce")
-    tmp = tmp.dropna(subset=na_cols)
-    tmp["patent_class"] = tmp["patent_class"].astype(int)
-
-    for col in date_cols:
-        a = pd.to_datetime(tmp[col], format="%m/%d/%Y", errors="coerce")
-        tmp[col] = a
     
-    tmp = tmp[keep]
+    if na_cols:
+        tmp = tmp.dropna(subset=na_cols)
+    
+    tmp["patent_class"] = tmp["patent_class"].astype(int)
+    
+    if date_cols:
+        for col in date_cols:
+            a = pd.to_datetime(tmp[col], format="%m/%d/%Y", errors="coerce")
+            tmp[col] = a
+    
+    if keep:
+        tmp = tmp[keep]
+    
+    if save:
+        tmp.to_pickle('../data/derived_data/patent_level/patent_data.pkl')
 
     return tmp
 
-def add_dumies(patent_data, prefix='pc', extra={'xi' : 'mean'}):
+def add_dumies(patent_data, prefix='pc', extra={'xi' : 'mean'}, save=False, path=None):
     """
     Add patent class dummies.
     
@@ -150,6 +194,9 @@ def add_dumies(patent_data, prefix='pc', extra={'xi' : 'mean'}):
         The prefix to add to the dummies.
     extra : dict{str : str}, default {'xi' : 'mean'}
         Extra argument to :func:`pandas.DataFrame.agg()`.
+    save : bool, default False
+        Weither to save the DataFrame as pickle
+        in 'data/derived_data/patent_level/patent_distribution.pkl'.
     
     Returns
     -------
@@ -164,10 +211,12 @@ def add_dumies(patent_data, prefix='pc', extra={'xi' : 'mean'}):
     firm_df = tmp.groupby(by=["permno", "year"]
     ).agg(agg_dict).reset_index()
 
+    if save:
+        firm_df.to_pickle('../data/derived_data/patent_level/patent_distribution.pkl')
+    
     return firm_df
 
 
-# Firm patent level functions
 class AddLag(base.BaseEstimator, base.TransformerMixin):
     
     def __init__(self, numLags, groupCol='permno', timevar='year', col_prefix='pc', sufix='lag', set_index=True, dropna=True, filter_rows=True):
@@ -238,7 +287,7 @@ class AddLag(base.BaseEstimator, base.TransformerMixin):
 #         return tmp.astype(int)
 
 # Cite data functions
-def add_permno(cites, patents, how='inner', save=True):
+def add_permno(cites, patents, how='inner', save=False):
     """
     Add citing and cited company id to the cite table.
     
@@ -257,7 +306,8 @@ def add_permno(cites, patents, how='inner', save=True):
         
         See :func:`pandas.merge` for details.
     save : bool, default True
-        Weither to save the DataFrame as a pickle.
+        Weither to save the DataFrame as a pickle
+        in 'data/derived_data/cites/patent_cites.pkl'.
     
     Returns
     -------
@@ -276,7 +326,7 @@ def add_permno(cites, patents, how='inner', save=True):
         
     return tmp2
 
-def patent_to_firm_cites(cites, methods=['count', 'freq'], save=True):
+def patent_to_firm_cites(cites, methods=['count', 'freq'], save=False):
     """
     Group the patents by the citing and cited companies.
     
@@ -293,7 +343,8 @@ def patent_to_firm_cites(cites, methods=['count', 'freq'], save=True):
          
         'freq' divides count by the total number of patents of the citing company.
     save : bool, default True
-        Weither to save the DataFrame as a pickle.
+        Weither to save the DataFrame as a pickle
+        in 'data/derived_data/cites/firm_cites.pkl'.
     
     Returns
     -------
@@ -331,7 +382,9 @@ def cite_hist(permno, permno_cites, method='freq', show=True, save=True, path=No
     save : bool, default True
         Weither to save the figure.
     path : str, default None
-        Where to save, if `None`, saves in f"../images/cites/hist_{method}_{permno}".
+        Where to save.
+        
+        If `None`, saves in f"../images/cites/hist_{method}_{permno}".
     dpi : float, default 500
         The quality of the image.
     figsize : tuple[float], default (10,7)
