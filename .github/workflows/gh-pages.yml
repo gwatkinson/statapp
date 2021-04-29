@@ -40,7 +40,7 @@ jobs:
           path: .virtualenvs
           key: ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
-            ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
+            ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-
         if: always()
 
       - name: Install dependencies with poetry
