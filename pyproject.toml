@@ -57,8 +57,9 @@ pydocstyle = "*"
 # pytest-profiling = "*"
 
 # Documentation
-mkdocs = "~1.0"
+Sphinx = "^3.5.4"
 # pygments = "^2.5.2"
+# mkdocs = "~1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
