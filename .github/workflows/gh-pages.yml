@@ -1,0 +1,39 @@
+name: "Deploy documentation"
+
+on:
+  - push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Sphinx
+        run: |
+          pip install sphinx furo
+
+      - name: Build site
+        run: |
+          sphinx-build -b html docs docs/_build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: DocumentationHTML
+          path: docs/_build/
