@@ -67,6 +67,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-3.9-poetry-1.1.6-
 
+      - name: Print local
+        run: ls
+
       - name: Build site
         run: |
           poetry run sphinx-build -b html docs docs/_build
