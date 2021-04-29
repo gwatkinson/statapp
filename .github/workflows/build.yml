@@ -1,4 +1,4 @@
-name: Setup and lint the project and build the documentation
+name: Setup, Lint and Build
 
 on:
   - push
@@ -38,7 +38,6 @@ jobs:
           key: ${{ runner.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-
-        if: always()
 
       - name: Install dependencies with poetry
         run: |
@@ -49,6 +48,25 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.6
+      - run: |
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project false
+          poetry config virtualenvs.path .
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: .virtualenvs
+          key: ${{ runner.os }}-3.9-poetry-1.1.6-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-3.9-poetry-1.1.6-
+
       - name: Build site
         run: |
           poetry run sphinx-build -b html docs docs/_build
@@ -69,6 +87,25 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.6
+      - run: |
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project false
+          poetry config virtualenvs.path .
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: .virtualenvs
+          key: ${{ runner.os }}-3.9-poetry-1.1.6-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-3.9-poetry-1.1.6-
+
       - name: Lint with pylint
         run: |
           poetry run pylint projet
