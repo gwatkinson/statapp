@@ -6,6 +6,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      os: ubuntu-latest
+      python-version: 3.9
+      poetry-version: 1.1.6
     steps:
       - name: Repository checkout
         uses: actions/checkout@v2
@@ -13,14 +17,36 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Setup python
+      - name: Python setup
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: ${{ env.python-version }}
 
-      - name: Install Sphinx
+      - name: Poetry setup
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: ${{ env.poetry-version }}
+
+      - name: Setup poetry environment
         run: |
-          pip install sphinx furo
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project false
+          poetry config virtualenvs.path .
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: .virtualenvs
+          key: ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
+        if: always()
+
+      - name: Install dependencies with poetry
+        run: |
+          poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Build site
         run: |
