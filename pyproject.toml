@@ -58,6 +58,8 @@ pydocstyle = "*"
 
 # Documentation
 Sphinx = "^3.5.4"
+sphinx-rtd-theme = "^0.5.2"
+furo = "^2021.4.11-beta.34"
 # pygments = "^2.5.2"
 # mkdocs = "~1.0"
 
