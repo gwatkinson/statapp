@@ -13,22 +13,22 @@ jobs:
       python-version: 3.9
       poetry-version: 1.1.6
     steps:
-      - name: 1/9) Repository checkout
+      - name: 1/8) Repository checkout
         uses: actions/checkout@v2
-      - name: 2/9) Python setup (Python 3.9)
+      - name: 2/8) Python setup (Python 3.9)
         uses: actions/setup-python@v2
         with:
           python-version: ${{ env.python-version }}
-      - name: 3/9) Poetry setup
+      - name: 3/8) Poetry setup
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: ${{ env.poetry-version }}
-      - name: 4/9) Setup poetry environment
+      - name: 4/8) Setup poetry environment
         run: |
           poetry config virtualenvs.create true
           poetry config virtualenvs.in-project false
           poetry config virtualenvs.path .
-      - name: 5/9) Cache Poetry virtualenv
+      - name: 5/8) Cache Poetry virtualenv
         uses: actions/cache@v2
         id: cache
         with:
@@ -37,7 +37,7 @@ jobs:
           restore-keys: |
             ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
         if: always()
-      - name: 6/9) Install dependencies with poetry
+      - name: 6/8) Install dependencies with poetry
         run: |
           poetry install
         if: steps.cache.outputs.cache-hit != 'true'
@@ -49,15 +49,15 @@ jobs:
       #   run: |
       #     isort projet
       #   if: always()
-      - name: 7/9) Lint with pylint
+      - name: 7/8) Lint with pylint
         run: |
           poetry run pylint projet
         if: always()
-      - name: 8/9) Lint with mypy
+      # - name: 8/9) Lint with mypy
+      #   run: |
+      #     # poetry run mypy projet
+      # if: always()
+      - name: 8/8) Lint with pydocstyle
         run: |
-          poetry run mypy projet
-        if: always()
-      - name: 9/9) Lint with pydocstyle
-        run: |
-          poetry run pydocstyle -e projet
+          poetry run pydocstyle projet
         if: always()
