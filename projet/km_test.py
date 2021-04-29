@@ -1,4 +1,4 @@
-"""Implement the Mapper algorithm"""
+"""Implement the Mapper algorithm."""
 # # Import the class
 # import kmapper as km
 # from kmapper.cover import Cover
