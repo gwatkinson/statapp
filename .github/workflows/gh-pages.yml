@@ -13,9 +13,6 @@ jobs:
     steps:
       - name: Repository checkout
         uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-          fetch-depth: 0
 
       - name: Python setup
         uses: actions/setup-python@v2
