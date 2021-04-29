@@ -44,7 +44,7 @@ isort = "^5.5.1" # Sort imports
 # Linters
 pylint = "~2.6.0"
 pydocstyle = "*"
-mypy = "~0.761"
+# mypy = "~0.761"
 
 # Testing
 # pytest = "^5.4"
