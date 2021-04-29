@@ -15,19 +15,23 @@ jobs:
     steps:
       - name: 1/8) Repository checkout
         uses: actions/checkout@v2
+
       - name: 2/8) Python setup (Python 3.9)
         uses: actions/setup-python@v2
         with:
           python-version: ${{ env.python-version }}
+
       - name: 3/8) Poetry setup
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: ${{ env.poetry-version }}
+
       - name: 4/8) Setup poetry environment
         run: |
           poetry config virtualenvs.create true
           poetry config virtualenvs.in-project false
           poetry config virtualenvs.path .
+
       - name: 5/8) Cache Poetry virtualenv
         uses: actions/cache@v2
         id: cache
@@ -37,26 +41,32 @@ jobs:
           restore-keys: |
             ${{ env.os }}-${{ env.python-version }}-poetry-${{ env.poetry-version }}-${{ hashFiles('**/poetry.lock') }}
         if: always()
+
       - name: 6/8) Install dependencies with poetry
         run: |
           poetry install
         if: steps.cache.outputs.cache-hit != 'true'
+      #
       # - name: 5/9) Format with black
       #   run: |
       #     black projet
       #   if: always()
+      #
       # - name: 4/9) Format with isort
       #   run: |
       #     isort projet
       #   if: always()
+
       - name: 7/8) Lint with pylint
         run: |
           poetry run pylint projet
         if: always()
+      #
       # - name: 8/9) Lint with mypy
       #   run: |
       #     # poetry run mypy projet
       # if: always()
+
       - name: 8/8) Lint with pydocstyle
         run: |
           poetry run pydocstyle projet
