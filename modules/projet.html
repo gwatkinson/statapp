@@ -195,7 +195,7 @@
 <dt>Cite data :</dt><dd><ul>
 <li><p><a class="reference internal" href="#projet.data_setup.add_permno" title="projet.data_setup.add_permno"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_permno</span></code></a></p></li>
 <li><p><a class="reference internal" href="#projet.data_setup.patent_to_firm_cites" title="projet.data_setup.patent_to_firm_cites"><code class="xref py py-func docutils literal notranslate"><span class="pre">patent_to_firm_cites</span></code></a></p></li>
-<li><p><a class="reference internal" href="#projet.data_setup.cite_hist" title="projet.data_setup.cite_hist"><code class="xref py py-func docutils literal notranslate"><span class="pre">cite_hist</span></code></a></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">cite_hist</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -211,7 +211,7 @@
 </div></blockquote>
 <dl class="py class">
 <dt id="projet.data_setup.AddLag">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">AddLag</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numLags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupCol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'permno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timevar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'year'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sufix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lag'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projet.data_setup.AddLag" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">AddLag</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numLags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupCol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'permno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timevar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'year'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lag'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projet.data_setup.AddLag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
 <dl class="py method">
 <dt id="projet.data_setup.AddLag.fit">
@@ -235,7 +235,7 @@
 <li><p><strong>patent_data</strong> (<em>DataFrame</em>) – The formatted patent DataFrame.</p></li>
 <li><p><strong>prefix</strong> (<em>str</em><em>, </em><em>default 'class'</em>) – The prefix to add to the dummies.</p></li>
 <li><p><strong>extra</strong> (<em>dict{str : str}</em><em>, </em><em>default {'xi' : 'mean'}</em>) – Extra argument to <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.DataFrame.agg</span></code>.</p></li>
-<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default False</em>) – Weither to save the DataFrame as pickle
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default False</em>) – Whether to save the DataFrame as pickle
 in ‘data/derived_data/patent_level/patent_distribution.pkl’.</p></li>
 </ul>
 </dd>
@@ -263,7 +263,7 @@ in ‘data/derived_data/patent_level/patent_distribution.pkl’.</p></li>
 <li><p><strong>how</strong> (<em>str</em><em>, </em><em>default 'inner'</em>) – <p>The merge method.</p>
 <p>See <code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.merge</span></code> for details.</p>
 </p></li>
-<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default True</em>) – Weither to save the DataFrame as a pickle
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to save the DataFrame as a pickle
 in ‘data/derived_data/cites/patent_cites.pkl’.</p></li>
 </ul>
 </dd>
@@ -272,34 +272,6 @@ in ‘data/derived_data/cites/patent_cites.pkl’.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="projet.data_setup.cite_hist">
-<code class="sig-name descname"><span class="pre">cite_hist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permno</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permno_cites</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'freq'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">7)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projet.data_setup.cite_hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot and/or save a histogramm for the given firm id.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>permno</strong> (<em>int</em>) – The index of the firm to plot.</p></li>
-<li><p><strong>permno_cites</strong> (<em>DataFrame</em>) – The firm DataFrame with <cite>count</cite> and/or <cite>freq</cite>.</p></li>
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>default 'freq'</em>) – The type of the plot (‘freq’ or ‘count’).</p></li>
-<li><p><strong>show</strong> (<em>bool</em><em>, </em><em>default True</em>) – Weither to show the figure.</p></li>
-<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default True</em>) – Weither to save the figure.</p></li>
-<li><p><strong>path</strong> (<em>str</em><em>, </em><em>default None</em>) – <p>Where to save.</p>
-<p>If <cite>None</cite>, saves in f”../images/cites/hist_{method}_{permno}”.</p>
-</p></li>
-<li><p><strong>dpi</strong> (<em>float</em><em>, </em><em>default 500</em>) – The quality of the image.</p></li>
-<li><p><strong>figsize</strong> (<em>tuple</em><em>[</em><em>float</em><em>]</em><em>, </em><em>default</em><em> (</em><em>10</em><em>,</em><em>7</em><em>)</em>) – The size of the figure.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -319,7 +291,7 @@ in ‘data/derived_data/cites/patent_cites.pkl’.</p></li>
 <p>If <cite>None</cite>, do not drop any rows.</p>
 </p></li>
 <li><p><strong>date_cols</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default None</em>) – The date columns to format.</p></li>
-<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default False</em>) – Weeither to save the DataFrame
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default False</em>) – Whether to save the DataFrame
 in ‘data/derived_data/patent_level/patent_data.pkl’</p></li>
 </ul>
 </dd>
@@ -421,7 +393,7 @@ in ‘data/derived_data/patent_level/patent_data.pkl’</p></li>
 <p>’count’ adds the number of patents between the cited and citing companies.</p>
 <p>’freq’ divides count by the total number of patents of the citing company.</p>
 </p></li>
-<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default True</em>) – Weither to save the DataFrame as a pickle
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to save the DataFrame as a pickle
 in ‘data/derived_data/cites/firm_cites.pkl’.</p></li>
 </ul>
 </dd>
