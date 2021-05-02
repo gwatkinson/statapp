@@ -32,7 +32,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_log_error
 from sklearn.pipeline import Pipeline
 
-# from lightgbm import LGBMRegressor
+# from import LGBMRegressor
 
 
 # Load raw data
@@ -165,7 +165,7 @@ def format_patent_data(
     date_cols : list[str], default None
         The date columns to format.
     save : bool, default False
-        Weeither to save the DataFrame
+        Whether to save the DataFrame
         in 'data/derived_data/patent_level/patent_data.pkl'
 
     Notes
@@ -218,7 +218,7 @@ def add_dumies(patent_data, prefix="pc", extra={"xi": "mean"}, save=False, path=
     extra : dict{str : str}, default {'xi' : 'mean'}
         Extra argument to :func:`pandas.DataFrame.agg()`.
     save : bool, default False
-        Weither to save the DataFrame as pickle
+        Whether to save the DataFrame as pickle
         in 'data/derived_data/patent_level/patent_distribution.pkl'.
 
     Returns
@@ -246,7 +246,7 @@ class AddLag(base.BaseEstimator, base.TransformerMixin):
         groupCol="permno",
         timevar="year",
         col_prefix="pc",
-        sufix="lag",
+        suffix="lag",
         set_index=True,
         dropna=True,
         filter_rows=True,
@@ -255,7 +255,7 @@ class AddLag(base.BaseEstimator, base.TransformerMixin):
         self.groupCol = groupCol
         self.timevar = timevar
         self.col_prefix = col_prefix + "_"
-        self.sufix = sufix
+        self.suffix = suffix
         self.set_index = set_index
         self.dropna = dropna
         self.filter_rows = filter_rows
@@ -275,7 +275,7 @@ class AddLag(base.BaseEstimator, base.TransformerMixin):
 
         for i in range(1, self.numLags + 1):
             for col in cols:
-                tmp[col + "_" + self.sufix + "_" + str(i)] = tmp.groupby([self.groupCol])[col].shift(i)
+                tmp[col + "_" + self.suffix + "_" + str(i)] = tmp.groupby([self.groupCol])[col].shift(i)
 
         if self.dropna:
             tmp = tmp.dropna()
@@ -338,7 +338,7 @@ def add_permno(cites, patents, how="inner", save=False):
 
         See :func:`pandas.merge` for details.
     save : bool, default True
-        Weither to save the DataFrame as a pickle
+        Whether to save the DataFrame as a pickle
         in 'data/derived_data/cites/patent_cites.pkl'.
 
     Returns
@@ -378,7 +378,7 @@ def patent_to_firm_cites(cites, methods=["count", "freq"], save=False):
 
         'freq' divides count by the total number of patents of the citing company.
     save : bool, default True
-        Weither to save the DataFrame as a pickle
+        Whether to save the DataFrame as a pickle
         in 'data/derived_data/cites/firm_cites.pkl'.
 
     Returns
@@ -405,72 +405,6 @@ def patent_to_firm_cites(cites, methods=["count", "freq"], save=False):
         tmp.to_pickle("../data/derived_data/cites/firm_cites.pkl")
 
     return tmp
-
-
-def cite_hist(
-    permno,
-    permno_cites,
-    method="freq",
-    show=True,
-    save=True,
-    path=None,
-    dpi=500,
-    figsize=(10, 7),
-):
-    """
-    Plot and/or save a histogramm for the given firm id.
-
-    Parameters
-    ----------
-    permno : int
-        The index of the firm to plot.
-    permno_cites : DataFrame
-        The firm DataFrame with `count` and/or `freq`.
-    method : str, default 'freq'
-        The type of the plot ('freq' or 'count').
-    show : bool, default True
-        Weither to show the figure.
-    save : bool, default True
-        Weither to save the figure.
-    path : str, default None
-        Where to save.
-
-        If `None`, saves in f"../images/cites/hist_{method}_{permno}".
-    dpi : float, default 500
-        The quality of the image.
-    figsize : tuple[float], default (10,7)
-        The size of the figure.
-
-    Returns
-    -------
-    None
-    """
-    assert method in permno_cites.columns, "The wanted method is not possible with the given DataFrame."
-
-    if save and path is None:
-        path = f"../images/cites/hist_{method}_{permno}"
-
-    fig, ax = plt.subplots(figsize=figsize)
-    label = "Nombre de brevets" if method == "count" else "Frequence"
-    permno_cites[permno_cites["citing_permno"] == permno].sort_values("cited_permno").plot(
-        x="cited_permno", y=method, label=label, ax=ax
-    )
-    plt.axvline(
-        x=int(permno),
-        color="red",
-        linestyle="dotted",
-        linewidth=0.7,
-        label=f"Entreprise {permno}",
-    )
-    ax.set_title(f"Histogramme des entreprises citées par {permno}")
-    ax.set_xlabel(f"Index des entreprises citées par l'entreprise {permno}")
-    ax.set_ylabel(label)
-    plt.legend()
-
-    if save:
-        fig.savefig(path, dpi=dpi)
-    if show:
-        plt.show()
 
 
 # Firm level functions
