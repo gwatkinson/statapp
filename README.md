@@ -10,6 +10,13 @@ Récupération du projet sur GitHub avec :
 
         git clone https://github.com/gwatkinson/statapp.git
 
+Installation de l'environnement python avec :
+
+        pip install poetry
+        poetry install
+        poetry shell
+
+
 ## Documentation
 
 Images obtenues avec kmapper :
