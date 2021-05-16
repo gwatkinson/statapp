@@ -22,16 +22,19 @@ This is divided in a few sections :
 
 
 # Imports
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import scipy as sc
-import seaborn as sns
-from sklearn import base
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_log_error
-from sklearn.pipeline import Pipeline
+from pathlib import Path
+from glob import glob
 
+# import matplotlib.pyplot as plt
+# import scipy as sc
+# import seaborn as sns
+from sklearn import base
+
+# from sklearn.ensemble import RandomForestRegressor
+# from sklearn.metrics import mean_squared_log_error
+# from sklearn.pipeline import Pipeline
 # from import LGBMRegressor
 
 
@@ -72,7 +75,7 @@ def load_df(path, form):
     return tmp
 
 
-def load_data(dfs=["data_firm_level", "patents_firm_merge", "cites"]):
+def load_data(dfs=["data_firm_level", "patents_firm_merge", "cites"], path="../data/"):
     """
     Return a list of the wanted DataFrame.
 
@@ -80,6 +83,8 @@ def load_data(dfs=["data_firm_level", "patents_firm_merge", "cites"]):
     ----------
     dfs : list[str], default ['data_firm_level', 'patents_firm_merge', 'cites']
         List of the wanted df.
+    path : str, default "../data/"
+        Path to the folder containing the datasets
 
     Notes
     -----
@@ -97,7 +102,7 @@ def load_data(dfs=["data_firm_level", "patents_firm_merge", "cites"]):
 
     Examples
     --------
-    Load the three important DataFrames :
+    Load the three important raw DataFrames :
     >>> data_firm_level, patents_firm_merge, cites = load_data(dfs=['data_firm_level', 'patents_firm_merge', 'cites'])
 
     Load a generated DataFrame :
@@ -109,27 +114,29 @@ def load_data(dfs=["data_firm_level", "patents_firm_merge", "cites"]):
         List containing the wanted DataFrames in the right order.
     """
     d = {
-        "data_firm_level": ("../data/Firm_patent/data_firm_level.dta", "stata"),
-        "data_patent_level": ("../data/Patent_level_data/data_patent_level.dta", "stata"),
+        "data_firm_level": (path + "Firm_patent/data_firm_level.dta", "stata"),
+        "data_patent_level": (path + "Patent_level_data/data_patent_level.dta", "stata"),
         "cites": (
-            "../data/Patent_level_data/USPatent_1926-2010/cites/cites.dta",
+            path + "Patent_level_data/USPatent_1926-2010/cites/cites.dta",
             "stata",
         ),
         "firm_innovation_v2": (
-            "../data/Patent_level_data/USPatent_1926-2010/firm_innovation/firm_innovation_v2.dta",
+            path + "Patent_level_data/USPatent_1926-2010/firm_innovation/firm_innovation_v2.dta",
             "stata",
         ),
         "patents_xi": (
-            "../data/Patent_level_data/USPatent_1926-2010/patents_xi/patents_xi.dta",
+            path + "Patent_level_data/USPatent_1926-2010/patents_xi/patents_xi.dta",
             "stata",
         ),
         "patent_values": (
-            "../data/Patent_level_data/Patent_CRSP_match_1929-2017/patent_values/patent_values.dta",
+            path + "Patent_level_data/Patent_CRSP_match_1929-2017/patent_values/patent_values.dta",
             "stata",
         ),
-        "patents_firm_merge": ("../data/Firm_patent/patents_firm_merge.dta", "stata"),
-        "patent_cites": ("../data/derived_data/cites/patent_cites.pkl", "pickle"),
-        "firm_cites": ("../data/derived_data/cites/firm_cites.pkl", "pickle"),
+        "patents_firm_merge": (path + "Firm_patent/patents_firm_merge.dta", "stata"),
+        "patent_cites": (path + "derived_data/cites/patent_cites.pkl", "pickle"),
+        "firm_cites": (path + "derived_data/cites/firm_cites.pkl", "pickle"),
+        "patent_data": (path + "derived_data/patent_level/patent_data.pkl", "pickle"),
+        "patent_distribution": (path + "derived_data/patent_level/patent_distribution.pkl", "pickle"),
     }
     l = []
 
@@ -139,6 +146,15 @@ def load_data(dfs=["data_firm_level", "patents_firm_merge", "cites"]):
     return l
 
 
+# Load all derived data
+def load_derived(path="../data/"):
+    files = glob(path + "derived_data/**/*.pkl")
+    dfs = [Path(file).stem for file in files]
+    print("(" + ", ".join(dfs) + ")")
+    data = load_data(dfs=dfs, path=path)
+    return data
+
+
 #  Patent level functions
 def format_patent_data(
     patent_data,
@@ -146,9 +162,10 @@ def format_patent_data(
     na_cols=["patent_class"],
     date_cols=None,
     save=False,
+    savepath="../data/derived_data/patent_level/patent_data.pkl",
 ):
     """
-    Format the raw DataFrame.
+    Format the raw patent DataFrame.
 
     Parameters
     ----------
@@ -165,8 +182,9 @@ def format_patent_data(
     date_cols : list[str], default None
         The date columns to format.
     save : bool, default False
-        Whether to save the DataFrame
-        in 'data/derived_data/patent_level/patent_data.pkl'
+        Whether to save the DataFrame.
+    savepath : str, default 'data/derived_data/patent_level/patent_data.pkl'
+        Where to save the DataFrame if save is True.
 
     Notes
     -----
@@ -200,12 +218,18 @@ def format_patent_data(
         tmp = tmp[keep]
 
     if save:
-        tmp.to_pickle("../data/derived_data/patent_level/patent_data.pkl")
+        tmp.to_pickle(savepath)
 
     return tmp
 
 
-def add_dumies(patent_data, prefix="pc", extra={"xi": "mean"}, save=False, path=None):
+def add_dumies(
+    patent_data,
+    prefix="pc",
+    extra={"xi": "mean"},
+    save=False,
+    savepath="../data/derived_data/patent_level/patent_distribution.pkl",
+):
     """
     Add patent class dummies.
 
@@ -218,14 +242,19 @@ def add_dumies(patent_data, prefix="pc", extra={"xi": "mean"}, save=False, path=
     extra : dict{str : str}, default {'xi' : 'mean'}
         Extra argument to :func:`pandas.DataFrame.agg()`.
     save : bool, default False
-        Whether to save the DataFrame as pickle
-        in 'data/derived_data/patent_level/patent_distribution.pkl'.
+        Whether to save the DataFrame as pickle.
+    savepath : str, default '../data/derived_data/patent_level/patent_distribution.pkl'
+        Where to save the DataFrame if save is True.
 
     Returns
     -------
     DataFrame
         The firm and year level dummy DataFrame.
     """
+    for key in extra:
+        if key not in patent_data.columns:
+            print(f"{key} not in dataframe.")
+            extra.pop(key)
     tmp = patent_data.copy()
     tmp = pd.get_dummies(data=tmp, columns=["patent_class"], prefix=[prefix])
     agg_dict = {}
@@ -234,7 +263,7 @@ def add_dumies(patent_data, prefix="pc", extra={"xi": "mean"}, save=False, path=
     firm_df = tmp.groupby(by=["permno", "year"]).agg(agg_dict).reset_index()
 
     if save:
-        firm_df.to_pickle("../data/derived_data/patent_level/patent_distribution.pkl")
+        firm_df.to_pickle(savepath)
 
     return firm_df
 
@@ -319,7 +348,13 @@ class AddLag(base.BaseEstimator, base.TransformerMixin):
 #         return tmp.astype(int)
 
 # Cite data functions
-def add_permno(cites, patents, how="inner", save=False):
+def add_permno(
+    cites,
+    patents,
+    how="inner",
+    save=False,
+    savepath="../data/derived_data/cites/patent_cites.pkl",
+):
     """
     Add citing and cited company id to the cite table.
 
@@ -338,8 +373,9 @@ def add_permno(cites, patents, how="inner", save=False):
 
         See :func:`pandas.merge` for details.
     save : bool, default True
-        Whether to save the DataFrame as a pickle
-        in 'data/derived_data/cites/patent_cites.pkl'.
+        Whether to save the DataFrame as a pickle.
+    savepath : str, default '../data/derived_data/cites/patent_cites.pkl'
+        Where to save the DataFrame if save is True.
 
     Returns
     -------
@@ -356,12 +392,17 @@ def add_permno(cites, patents, how="inner", save=False):
     tmp2 = tmp2.drop(columns=["patnum"]).rename(columns={"permno": "cited_permno"})
 
     if save:
-        tmp2.to_pickle("../data/derived_data/cites/patent_cites.pkl")
+        tmp2.to_pickle(savepath)
 
     return tmp2
 
 
-def patent_to_firm_cites(cites, methods=["count", "freq"], save=False):
+def patent_to_firm_cites(
+    cites,
+    methods=["count", "freq"],
+    save=False,
+    savepath="../data/derived_data/cites/firm_cites.pkl",
+):
     """
     Group the patents by the citing and cited companies.
 
@@ -378,8 +419,9 @@ def patent_to_firm_cites(cites, methods=["count", "freq"], save=False):
 
         'freq' divides count by the total number of patents of the citing company.
     save : bool, default True
-        Whether to save the DataFrame as a pickle
-        in 'data/derived_data/cites/firm_cites.pkl'.
+        Whether to save the DataFrame as a pickle.
+    savepath : str, default '../data/derived_data/cites/firm_cites.pkl'
+        Where to save the DataFrame if save is True.
 
     Returns
     -------
@@ -402,7 +444,7 @@ def patent_to_firm_cites(cites, methods=["count", "freq"], save=False):
         tmp = tmp.drop(columns=["count"])
 
     if save:
-        tmp.to_pickle("../data/derived_data/cites/firm_cites.pkl")
+        tmp.to_pickle(savepath)
 
     return tmp
 
