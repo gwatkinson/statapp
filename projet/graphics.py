@@ -1,8 +1,9 @@
-"""
-Module to store graphs and ploting functions.
-"""
+"""Module to store graphs and ploting functions."""
 
+# Import
+import matplotlib.pyplot as plt
 
+# Cite data
 def cite_hist(
     permno,
     permno_cites,

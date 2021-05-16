@@ -1,6 +1,4 @@
-"""
-Generate the useful dataframes from the raw datasets.
-"""
+"""Generate the useful dataframes from the raw datasets."""
 
 # Import
 import data_setup as ds
