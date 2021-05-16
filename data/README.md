@@ -3,6 +3,8 @@
 Il devrait être de la forme :
 ```
 📦data
+ ┣ 📂derived_data
+    ┗ ...
  ┣ 📂Firm_patent
  ┃ ┣ 📜data_firm_level.dta
  ┃ ┗ 📜patents_firm_merge.dta
